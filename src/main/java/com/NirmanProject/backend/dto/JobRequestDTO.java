@@ -6,6 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class JobRequestDTO {
+    private String jobProviderId;
     private String location;
     private String contactPerson;
     private String contactNumber;
@@ -26,6 +27,7 @@ public class JobRequestDTO {
     private double wagePerDay;
     private String workingHours;
     private String jobType;
+    private String workerAssignedStatus = "Pending";
 
     private String employerIdProofBase64;
 }

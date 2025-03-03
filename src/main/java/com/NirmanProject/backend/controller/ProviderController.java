@@ -20,7 +20,7 @@ public class ProviderController {
     private ProviderService signUpService;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;  // ✅ Use PasswordEncoder interface
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private ProviderRepository signUpRepository;
@@ -33,10 +33,7 @@ public class ProviderController {
             );
         }
 
-        // Encrypt the password before saving
         providerSignUp.setPassword(passwordEncoder.encode(providerSignUp.getPassword()));
-
-        // Save the provider using the service layer
         ProviderSignUp savedProvider = signUpService.registeruser(providerSignUp);
 
         return ResponseEntity.ok(
@@ -46,13 +43,13 @@ public class ProviderController {
 
     @PostMapping("/login")
     public ResponseEntity<?> loginProvider(@RequestBody Map<String, String> loginData) {
-        String email = loginData.get("email");
+        String jobProviderId = loginData.get("jobProviderId");
         String password = loginData.get("password");
 
-        Optional<ProviderSignUp> providerOptional = signUpRepository.findByEmail(email);
+        Optional<ProviderSignUp> providerOptional = signUpRepository.findByJobProviderId(jobProviderId);
         if (providerOptional.isEmpty()) {
             return ResponseEntity.badRequest().body(
-                    Map.of("success", false, "message", "Email not found!")
+                    Map.of("success", false, "message", "JobProviderID not found!")
             );
         }
 
@@ -63,12 +60,13 @@ public class ProviderController {
             );
         }
 
+        // Return consistent key "jobProviderId" to match the client expectation
         return ResponseEntity.ok(
                 Map.of(
                         "success", true,
                         "message", "Login successful!",
                         "name", provider.getName(),
-                        "email", provider.getEmail()
+                        "jobProviderId", provider.getJobProviderId()
                 )
         );
     }

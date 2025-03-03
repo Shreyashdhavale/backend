@@ -7,6 +7,10 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface WorkerRepository extends JpaRepository<Worker, Long> {
+public interface WorkerRepository extends JpaRepository<Worker, String> {
     List<Worker> findByFullNameContainingIgnoreCase(String name);
+
+    List<Worker> findBySkillSetIgnoreCaseContainingAndAvailabilityTrue(String requiredSkill);
+
+//    List<Worker> findByAvailability(boolean b);
 }

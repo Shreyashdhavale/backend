@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 public class WorkerDTO {
     // Personal Information
-    private Long Id;
+    private String workerId;
     private String fullName;
     private Integer age;
     private String dateOfBirth; // expected in ISO format (yyyy-MM-dd)

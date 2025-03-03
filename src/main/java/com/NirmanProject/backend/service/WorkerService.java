@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,7 +55,7 @@ public class WorkerService {
 
     // Method to get worker details by ID
 
-    public WorkerDTO getWorkerDetails(Long id) {
+    public WorkerDTO getWorkerDetails(String id) {
         Worker worker = workerRepository.findById(id).orElse(null);
         if (worker == null) {
             return null;
@@ -72,14 +73,14 @@ public class WorkerService {
 
     // Method to find a worker by ID
 
-    public Worker findWorkerById(Long id) {
+    public Worker findWorkerById(String id) {
         return workerRepository.findById(id).orElse(null);
     }
 
     // Helper method to convert Worker to WorkerDTO
     private WorkerDTO convertToDTO(Worker worker) {
         WorkerDTO workerDTO = new WorkerDTO();
-        workerDTO.setId(worker.getId());
+        workerDTO.setWorkerId(worker.getWorkerId());
         workerDTO.setFullName(worker.getFullName());
         workerDTO.setAge(worker.getAge());
         workerDTO.setDateOfBirth(String.valueOf(worker.getDateOfBirth()));
@@ -114,7 +115,7 @@ public class WorkerService {
 
 
 
-    public Worker updateWorker(Long id, WorkerDTO workerDTO) {
+    public Worker updateWorker(String id, WorkerDTO workerDTO) {
         // Find the worker to be updated
         Worker existingWorker = findWorkerById(id);
         if (existingWorker == null) {
@@ -157,5 +158,18 @@ public class WorkerService {
 
         // Save the updated worker
         return workerRepository.save(existingWorker);
+    }
+
+    public List<Worker> getAllWorkers() {
+        return workerRepository.findAll();
+    }
+
+    public List<Worker> findAll() {
+        return workerRepository.findAll();
+    }
+
+
+    public Optional<Worker> getWorkerById(String workerId) {
+        return workerRepository.findById(workerId);
     }
 }

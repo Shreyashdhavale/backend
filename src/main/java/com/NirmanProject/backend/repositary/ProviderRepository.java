@@ -6,9 +6,11 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface ProviderRepository extends JpaRepository<ProviderSignUp, Long> {
+public interface ProviderRepository extends JpaRepository<ProviderSignUp, String> {
 
     boolean existsByEmail(String email);
 
     Optional<ProviderSignUp> findByEmail(String email);
+
+    Optional<ProviderSignUp> findByJobProviderId(String jobProviderId);
 }

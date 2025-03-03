@@ -1,7 +1,10 @@
 package com.NirmanProject.backend.controller;
 
+import com.NirmanProject.backend.dto.AssignmentRequestDTO;
 import com.NirmanProject.backend.dto.WorkerDTO;
+import com.NirmanProject.backend.model.JobRequest;
 import com.NirmanProject.backend.model.Worker;
+import com.NirmanProject.backend.service.JobRequestService;
 import com.NirmanProject.backend.service.WorkerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +17,11 @@ import java.util.List;
 public class WorkerController {
 
     private final WorkerService workerService;
+    private final JobRequestService jobRequestService;
 
-    public WorkerController(WorkerService workerService) {
+    public WorkerController(WorkerService workerService, JobRequestService jobRequestService) {
         this.workerService = workerService;
+        this.jobRequestService = jobRequestService;
     }
 
     // Endpoint to register a new worker (multipart/form-data)
@@ -33,7 +38,7 @@ public class WorkerController {
 
     // Endpoint to retrieve worker details by ID (including profile photo, name, skills, and location)
     @GetMapping("/{id}")
-    public ResponseEntity<WorkerDTO> getWorkerDetails(@PathVariable Long id) {
+    public ResponseEntity<WorkerDTO> getWorkerDetails(@PathVariable String id) {
         WorkerDTO workerDTO = workerService.getWorkerDetails(id);
         if (workerDTO == null) {
             return ResponseEntity.notFound().build();
@@ -48,9 +53,15 @@ public class WorkerController {
         return new ResponseEntity<>(workers, HttpStatus.OK);
     }
 
+    @GetMapping
+    public ResponseEntity<List<Worker>> getAllWorkers() {
+        List<Worker> workers = workerService.getAllWorkers();
+        return new ResponseEntity<>(workers, HttpStatus.OK);
+    }
+
     // Endpoint to get the profile photo of a worker by ID
     @GetMapping("/{id}/profilePhoto")
-    public ResponseEntity<String> getProfilePhoto(@PathVariable Long id) {
+    public ResponseEntity<String> getProfilePhoto(@PathVariable String id) {
         Worker worker = workerService.findWorkerById(id);
         if (worker == null || worker.getProfilePhoto() == null) {
             return ResponseEntity.notFound().build();
@@ -59,7 +70,7 @@ public class WorkerController {
     }
 
     @PutMapping(value = "/{id}", consumes = "multipart/form-data")
-    public ResponseEntity<?> updateWorker(@PathVariable Long id, @ModelAttribute WorkerDTO workerDTO) {
+    public ResponseEntity<?> updateWorker(@PathVariable String id, @ModelAttribute WorkerDTO workerDTO) {
         try {
             Worker updatedWorker = workerService.updateWorker(id, workerDTO);
             return new ResponseEntity<>(updatedWorker, HttpStatus.OK);
@@ -68,4 +79,19 @@ public class WorkerController {
             return new ResponseEntity<>("Error updating worker", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    // Worker endpoints
+    @GetMapping("/workers")
+    public ResponseEntity<List<Worker>> getAllWorker() {
+        List<Worker> workers = workerService.findAll();
+        return ResponseEntity.ok(workers);
+    }
+
+//    @GetMapping("/workers/available")
+//    public ResponseEntity<List<Worker>> getAvailableWorkers() {
+//        List<Worker> workers = workerService.findByAvailability(true);
+//        return ResponseEntity.ok(workers);
+//    }
+
+
 }
