@@ -85,6 +85,9 @@ public class Worker {
     // Consent
     @Column(name = "consent")
     private Boolean consent;
+    // Registration Information
+    @Column(name = "registered_by_email")
+    private String registeredByEmail;
 
     // Automatically generate a random 6-digit worker ID before persisting
     @PrePersist
@@ -92,4 +95,5 @@ public class Worker {
         Random random = new Random();
         this.workerId = String.format("%06d", random.nextInt(1000000));
     }
+
 }

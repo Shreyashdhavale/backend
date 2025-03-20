@@ -18,7 +18,6 @@ public class WorkerService {
     private WorkerRepository workerRepository;
 
     // Method to register a new worker
-
     public Worker registerWorker(WorkerDTO workerDTO) {
         Worker worker = new Worker();
         worker.setFullName(workerDTO.getFullName());
@@ -46,6 +45,9 @@ public class WorkerService {
         worker.setAadhaarPhoto(workerDTO.getAadhaarPhoto());
         worker.setAlternateDoc(workerDTO.getAlternateDoc());
 
+        // Set NGO registration information
+        worker.setRegisteredByEmail(workerDTO.getRegisteredByEmail());
+
         // Consent
         worker.setConsent(workerDTO.getConsent());
 
@@ -54,7 +56,6 @@ public class WorkerService {
     }
 
     // Method to get worker details by ID
-
     public WorkerDTO getWorkerDetails(String id) {
         Worker worker = workerRepository.findById(id).orElse(null);
         if (worker == null) {
@@ -72,7 +73,6 @@ public class WorkerService {
     }
 
     // Method to find a worker by ID
-
     public Worker findWorkerById(String id) {
         return workerRepository.findById(id).orElse(null);
     }
@@ -107,13 +107,14 @@ public class WorkerService {
         workerDTO.setAadhaarPhoto(worker.getAadhaarPhoto());
         workerDTO.setAlternateDoc(worker.getAlternateDoc());
 
+        // NGO registration information
+        workerDTO.setRegisteredByEmail(worker.getRegisteredByEmail());
+
         // Consent
         workerDTO.setConsent(worker.getConsent());
 
         return workerDTO;
     }
-
-
 
     public Worker updateWorker(String id, WorkerDTO workerDTO) {
         // Find the worker to be updated
@@ -138,9 +139,13 @@ public class WorkerService {
         existingWorker.setPreferredWorkLocation(workerDTO.getPreferredWorkLocation());
         existingWorker.setAvailability(workerDTO.getAvailability());
 
+        // Update NGO registration information if provided
+        if (workerDTO.getRegisteredByEmail() != null) {
+            existingWorker.setRegisteredByEmail(workerDTO.getRegisteredByEmail());
+        }
+
         // Consent
         existingWorker.setConsent(workerDTO.getConsent());
-
 
         // Update images only if new ones are provided
         if (workerDTO.getProfilePhoto() != null) {
@@ -167,9 +172,24 @@ public class WorkerService {
     public List<Worker> findAll() {
         return workerRepository.findAll();
     }
-
-
+//GET WORKER BY ID
     public Optional<Worker> getWorkerById(String workerId) {
         return workerRepository.findById(workerId);
     }
+
+    // Method to get the total number of workers
+    public long getTotalWorkers() {
+        return workerRepository.count();
+    }
+
+    // Method to get workers registered by a specific email
+    public List<Worker> getWorkersByRegisteredEmail(String email) {
+        return workerRepository.findByRegisteredByEmail(email);
+    }
+
+    // Method to count workers registered by a specific email
+    public long countWorkersByRegisteredEmail(String email) {
+        return workerRepository.countByRegisteredByEmail(email);
+    }
+
 }
