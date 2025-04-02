@@ -2,6 +2,7 @@ package com.NirmanProject.backend.controller;
 
 import com.NirmanProject.backend.dto.WorkerDTO;
 import com.NirmanProject.backend.model.Worker;
+import com.NirmanProject.backend.service.JobRequestService;
 import com.NirmanProject.backend.service.WorkerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,71 +15,81 @@ import java.util.List;
 public class WorkerController {
 
     private final WorkerService workerService;
+    private final JobRequestService jobRequestService;
 
-    public WorkerController(WorkerService workerService) {
+    public WorkerController(WorkerService workerService, JobRequestService jobRequestService) {
         this.workerService = workerService;
+        this.jobRequestService = jobRequestService;
     }
 
+    // Endpoint to register a new worker (multipart/form-data)
     @PostMapping(consumes = "multipart/form-data")
     public ResponseEntity<?> registerWorker(@ModelAttribute WorkerDTO workerDTO) {
         try {
             Worker savedWorker = workerService.registerWorker(workerDTO);
             return new ResponseEntity<>(savedWorker, HttpStatus.CREATED);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>("Error registering worker", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @GetMapping("/{id}/details")  // Renamed to avoid conflict
+    // Endpoint to retrieve worker details by ID (including profile photo, name, skills, and location)
+    @GetMapping("/{id}")
     public ResponseEntity<WorkerDTO> getWorkerDetails(@PathVariable String id) {
         WorkerDTO workerDTO = workerService.getWorkerDetails(id);
-        return workerDTO != null ? ResponseEntity.ok(workerDTO) : ResponseEntity.notFound().build();
+        if (workerDTO == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return new ResponseEntity<>(workerDTO, HttpStatus.OK);
     }
 
-    @GetMapping("/{workerId}")
-    public ResponseEntity<Worker> getWorkerById(@PathVariable String workerId) {
-        return workerService.getWorkerById(workerId)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
-    }
-
+    // Endpoint to search workers by name (returns full name, skill, and location)
     @GetMapping("/search")
     public ResponseEntity<List<WorkerDTO>> searchWorkers(@RequestParam String name) {
-        return ResponseEntity.ok(workerService.searchWorkersByName(name));
+        List<WorkerDTO> workers = workerService.searchWorkersByName(name);
+        return new ResponseEntity<>(workers, HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<List<Worker>> getAllWorkers() {
-        return ResponseEntity.ok(workerService.getAllWorkers());
+        List<Worker> workers = workerService.getAllWorkers();
+        return new ResponseEntity<>(workers, HttpStatus.OK);
     }
 
+    // Endpoint to get the profile photo of a worker by ID
     @GetMapping("/{id}/profilePhoto")
     public ResponseEntity<String> getProfilePhoto(@PathVariable String id) {
         Worker worker = workerService.findWorkerById(id);
-        return (worker == null || worker.getProfilePhoto() == null) ? ResponseEntity.notFound().build() : ResponseEntity.ok(worker.getProfilePhoto());
+        if (worker == null || worker.getProfilePhoto() == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(worker.getProfilePhoto());
     }
 
     @PutMapping(value = "/{id}", consumes = "multipart/form-data")
     public ResponseEntity<?> updateWorker(@PathVariable String id, @ModelAttribute WorkerDTO workerDTO) {
         try {
-            return ResponseEntity.ok(workerService.updateWorker(id, workerDTO));
+            Worker updatedWorker = workerService.updateWorker(id, workerDTO);
+            return new ResponseEntity<>(updatedWorker, HttpStatus.OK);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating worker");
+            e.printStackTrace();
+            return new ResponseEntity<>("Error updating worker", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @GetMapping("/total")
-    public ResponseEntity<Long> getTotalWorkers() {
-        return ResponseEntity.ok(workerService.getTotalWorkers());
+    // Worker endpoints
+    @GetMapping("/workers")
+    public ResponseEntity<List<Worker>> getAllWorker() {
+        List<Worker> workers = workerService.findAll();
+        return ResponseEntity.ok(workers);
     }
 
-    @GetMapping("/list-by-email/{email}")
-    public ResponseEntity<List<Worker>> getWorkersByEmail(@PathVariable String email) {
-        return ResponseEntity.ok(workerService.getWorkersByRegisteredEmail(email));
-    }
+//    @GetMapping("/workers/available")
+//    public ResponseEntity<List<Worker>> getAvailableWorkers() {
+//        List<Worker> workers = workerService.findByAvailability(true);
+//        return ResponseEntity.ok(workers);
+//    }
 
-    @GetMapping("/count-by-email/{email}")
-    public ResponseEntity<Long> countWorkersByEmail(@PathVariable String email) {
-        return ResponseEntity.ok(workerService.countWorkersByRegisteredEmail(email));
-    }
+
 }

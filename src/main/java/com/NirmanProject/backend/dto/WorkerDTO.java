@@ -37,8 +37,5 @@ public class WorkerDTO {
     // Consent
     private Boolean consent;
 
-    // NGO Registration information
-    private String registeredByEmail;
-    // Getters and Setters
 
 }

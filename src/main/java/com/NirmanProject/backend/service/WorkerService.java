@@ -45,8 +45,6 @@ public class WorkerService {
         worker.setAadhaarPhoto(workerDTO.getAadhaarPhoto());
         worker.setAlternateDoc(workerDTO.getAlternateDoc());
 
-        // Set NGO registration information
-        worker.setRegisteredByEmail(workerDTO.getRegisteredByEmail());
 
         // Consent
         worker.setConsent(workerDTO.getConsent());
@@ -107,8 +105,6 @@ public class WorkerService {
         workerDTO.setAadhaarPhoto(worker.getAadhaarPhoto());
         workerDTO.setAlternateDoc(worker.getAlternateDoc());
 
-        // NGO registration information
-        workerDTO.setRegisteredByEmail(worker.getRegisteredByEmail());
 
         // Consent
         workerDTO.setConsent(worker.getConsent());
@@ -138,11 +134,6 @@ public class WorkerService {
         existingWorker.setSkillLevel(workerDTO.getSkillLevel());
         existingWorker.setPreferredWorkLocation(workerDTO.getPreferredWorkLocation());
         existingWorker.setAvailability(workerDTO.getAvailability());
-
-        // Update NGO registration information if provided
-        if (workerDTO.getRegisteredByEmail() != null) {
-            existingWorker.setRegisteredByEmail(workerDTO.getRegisteredByEmail());
-        }
 
         // Consent
         existingWorker.setConsent(workerDTO.getConsent());
@@ -182,14 +173,5 @@ public class WorkerService {
         return workerRepository.count();
     }
 
-    // Method to get workers registered by a specific email
-    public List<Worker> getWorkersByRegisteredEmail(String email) {
-        return workerRepository.findByRegisteredByEmail(email);
-    }
-
-    // Method to count workers registered by a specific email
-    public long countWorkersByRegisteredEmail(String email) {
-        return workerRepository.countByRegisteredByEmail(email);
-    }
 
 }
