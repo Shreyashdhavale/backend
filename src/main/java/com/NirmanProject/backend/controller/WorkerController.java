@@ -8,7 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/workers")
@@ -92,4 +94,24 @@ public class WorkerController {
 //    }
 
 
+<<<<<<< HEAD
+=======
+    @GetMapping("/count-by-email/{email}")
+    public ResponseEntity<Long> countWorkersByEmail(@PathVariable String email) {
+        return ResponseEntity.ok(workerService.countWorkersByRegisteredEmail(email));
+    }
+    @PostMapping("/login")
+    public ResponseEntity<?> loginWorker(@RequestBody WorkerDTO workerDTO) {
+        Optional<Worker> workerOptional = workerService.loginWorker(workerDTO.getWorkerId());
+
+        if (workerOptional.isPresent()) {
+            Worker worker = workerOptional.get();
+            WorkerDTO responseDTO = workerService.convertToDTO(worker);
+            return ResponseEntity.ok(responseDTO); // Return WorkerDTO instead of Worker
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Worker ID");
+        }
+    }
+
+>>>>>>> 9ecd6d4 (    Added worker login)
 }

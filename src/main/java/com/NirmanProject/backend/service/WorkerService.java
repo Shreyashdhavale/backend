@@ -76,7 +76,7 @@ public class WorkerService {
     }
 
     // Helper method to convert Worker to WorkerDTO
-    private WorkerDTO convertToDTO(Worker worker) {
+    public WorkerDTO convertToDTO(Worker worker) {
         WorkerDTO workerDTO = new WorkerDTO();
         workerDTO.setWorkerId(worker.getWorkerId());
         workerDTO.setFullName(worker.getFullName());
@@ -173,5 +173,22 @@ public class WorkerService {
         return workerRepository.count();
     }
 
+<<<<<<< HEAD
+=======
+    // Method to get workers registered by a specific email
+    public List<Worker> getWorkersByRegisteredEmail(String email) {
+        return workerRepository.findByRegisteredByEmail(email);
+    }
+
+    // Method to count workers registered by a specific email
+    public long countWorkersByRegisteredEmail(String email) {
+        return workerRepository.countByRegisteredByEmail(email);
+    }
+//Worker login method
+public Optional<Worker> loginWorker(String workerId) {
+    return workerRepository.findByWorkerId(workerId);
+}
+
+>>>>>>> 9ecd6d4 (    Added worker login)
 
 }
