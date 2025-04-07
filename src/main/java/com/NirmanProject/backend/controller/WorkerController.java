@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,7 +23,6 @@ public class WorkerController {
         this.jobRequestService = jobRequestService;
     }
 
-    // Endpoint to register a new worker (multipart/form-data)
     @PostMapping(consumes = "multipart/form-data")
     public ResponseEntity<?> registerWorker(@ModelAttribute WorkerDTO workerDTO) {
         try {
@@ -36,7 +34,6 @@ public class WorkerController {
         }
     }
 
-    // Endpoint to retrieve worker details by ID (including profile photo, name, skills, and location)
     @GetMapping("/{id}")
     public ResponseEntity<WorkerDTO> getWorkerDetails(@PathVariable String id) {
         WorkerDTO workerDTO = workerService.getWorkerDetails(id);
@@ -46,7 +43,6 @@ public class WorkerController {
         return new ResponseEntity<>(workerDTO, HttpStatus.OK);
     }
 
-    // Endpoint to search workers by name (returns full name, skill, and location)
     @GetMapping("/search")
     public ResponseEntity<List<WorkerDTO>> searchWorkers(@RequestParam String name) {
         List<WorkerDTO> workers = workerService.searchWorkersByName(name);
@@ -59,7 +55,6 @@ public class WorkerController {
         return new ResponseEntity<>(workers, HttpStatus.OK);
     }
 
-    // Endpoint to get the profile photo of a worker by ID
     @GetMapping("/{id}/profilePhoto")
     public ResponseEntity<String> getProfilePhoto(@PathVariable String id) {
         Worker worker = workerService.findWorkerById(id);
@@ -80,26 +75,17 @@ public class WorkerController {
         }
     }
 
-    // Worker endpoints
     @GetMapping("/workers")
     public ResponseEntity<List<Worker>> getAllWorker() {
         List<Worker> workers = workerService.findAll();
         return ResponseEntity.ok(workers);
     }
 
-//    @GetMapping("/workers/available")
-//    public ResponseEntity<List<Worker>> getAvailableWorkers() {
-//        List<Worker> workers = workerService.findByAvailability(true);
-//        return ResponseEntity.ok(workers);
-//    }
-
-
-<<<<<<< HEAD
-=======
     @GetMapping("/count-by-email/{email}")
-    public ResponseEntity<Long> countWorkersByEmail(@PathVariable String email) {
+    public ResponseEntity<Long> countByEmail(@PathVariable String email) {
         return ResponseEntity.ok(workerService.countWorkersByRegisteredEmail(email));
     }
+
     @PostMapping("/login")
     public ResponseEntity<?> loginWorker(@RequestBody WorkerDTO workerDTO) {
         Optional<Worker> workerOptional = workerService.loginWorker(workerDTO.getWorkerId());
@@ -107,11 +93,16 @@ public class WorkerController {
         if (workerOptional.isPresent()) {
             Worker worker = workerOptional.get();
             WorkerDTO responseDTO = workerService.convertToDTO(worker);
-            return ResponseEntity.ok(responseDTO); // Return WorkerDTO instead of Worker
+            return ResponseEntity.ok(responseDTO);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Worker ID");
         }
     }
 
->>>>>>> 9ecd6d4 (    Added worker login)
+    // ✅ NEW ENDPOINT ADDED HERE
+    @GetMapping("/total")
+    public ResponseEntity<Long> getTotalWorkers() {
+        long total = workerService.getTotalWorkers();
+        return ResponseEntity.ok(total);
+    }
 }

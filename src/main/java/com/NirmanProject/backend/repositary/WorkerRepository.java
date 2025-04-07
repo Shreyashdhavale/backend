@@ -16,16 +16,13 @@ public interface WorkerRepository extends JpaRepository<Worker, String> {
 
     long count();  // Counts total workers
 
-<<<<<<< HEAD
 
 
-=======
-
-    long countByRegisteredByEmail(String email);  // Count workers by registeredByEmail
+    long countByEmail(String email);;  // Count workers by registeredByEmail
 
     //GET WORKERS BY REGISTERED EMAIL
-    List<Worker> findByRegisteredByEmail(String email);  // Get workers by registeredByEmail
->>>>>>> 9ecd6d4 (    Added worker login)
+    List<Worker> findByEmail(String email);  // Get workers by registeredByEmail
+
 
     //GET WORKER BY ID
     Optional<Worker> findByWorkerId(String workerId);

@@ -173,22 +173,21 @@ public class WorkerService {
         return workerRepository.count();
     }
 
-<<<<<<< HEAD
-=======
+
     // Method to get workers registered by a specific email
     public List<Worker> getWorkersByRegisteredEmail(String email) {
-        return workerRepository.findByRegisteredByEmail(email);
+        return workerRepository.findByEmail(email);
     }
 
     // Method to count workers registered by a specific email
     public long countWorkersByRegisteredEmail(String email) {
-        return workerRepository.countByRegisteredByEmail(email);
+        return workerRepository.countByEmail(email);
     }
 //Worker login method
 public Optional<Worker> loginWorker(String workerId) {
     return workerRepository.findByWorkerId(workerId);
 }
 
->>>>>>> 9ecd6d4 (    Added worker login)
+
 
 }
