@@ -119,15 +119,27 @@ public class WorkerService {
             throw new RuntimeException("Worker not found");
         }
 
-        // Update fields
+        // Update personal information
         existingWorker.setFullName(workerDTO.getFullName());
         existingWorker.setAge(workerDTO.getAge());
+        if (workerDTO.getDateOfBirth() != null && !workerDTO.getDateOfBirth().isEmpty()) {
+            existingWorker.setDateOfBirth(LocalDate.parse(workerDTO.getDateOfBirth()));
+        }
+        existingWorker.setGender(workerDTO.getGender());
         existingWorker.setContact(workerDTO.getContact());
+        existingWorker.setEmergencyContact(workerDTO.getEmergencyContact());
         existingWorker.setEmail(workerDTO.getEmail());
-        existingWorker.setSkillSet(workerDTO.getSkillSet());
-        existingWorker.setSkillLevel(workerDTO.getSkillLevel());
-        existingWorker.setPreferredWorkLocation(workerDTO.getPreferredWorkLocation());
-        existingWorker.setAvailability(workerDTO.getAvailability());
+
+        // Update address information
+        existingWorker.setStreetAddress(workerDTO.getStreetAddress());
+        existingWorker.setDistrict(workerDTO.getDistrict());
+        existingWorker.setState(workerDTO.getState());
+        existingWorker.setPincode(workerDTO.getPincode());
+
+        // Update other personal details
+        existingWorker.setMaritalStatus(workerDTO.getMaritalStatus());
+        existingWorker.setPhysicallyHandicapped(workerDTO.getPhysicallyHandicapped());
+        existingWorker.setCriticalIllness(workerDTO.getCriticalIllness());
 
         // Professional Details
         existingWorker.setSkillSet(workerDTO.getSkillSet());
@@ -140,15 +152,12 @@ public class WorkerService {
 
         // Update images only if new ones are provided
         if (workerDTO.getProfilePhoto() != null) {
-            // Update the profile photo
             existingWorker.setProfilePhoto(workerDTO.getProfilePhoto());
         }
         if (workerDTO.getAadhaarPhoto() != null) {
-            // Update the aadhaar photo
             existingWorker.setAadhaarPhoto(workerDTO.getAadhaarPhoto());
         }
         if (workerDTO.getAlternateDoc() != null) {
-            // Update the alternate document
             existingWorker.setAlternateDoc(workerDTO.getAlternateDoc());
         }
 
@@ -187,6 +196,7 @@ public class WorkerService {
 public Optional<Worker> loginWorker(String workerId) {
     return workerRepository.findByWorkerId(workerId);
 }
+
 
 
 

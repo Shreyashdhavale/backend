@@ -107,4 +107,40 @@ public class JobRequestService {
         // This will return workers whose skillSet contains the required skill (ignoring case) and are available
         return workerRepository.findBySkillSetIgnoreCaseContainingAndAvailabilityTrue(requiredSkill);
     }
+    public JobRequest removeAssignedWorker(String jobId, String workerId) {
+        Optional<JobRequest> jobRequestOptional = jobRequestRepository.findById(jobId);
+        if (jobRequestOptional.isEmpty()) {
+            throw new RuntimeException("Job not found with ID: " + jobId);
+        }
+
+        JobRequest jobRequest = jobRequestOptional.get();
+
+        // Check if the assignedWorkerIds list exists and contains the worker
+        if (jobRequest.getAssignedWorkerIds() != null &&
+                jobRequest.getAssignedWorkerIds().contains(workerId)) {
+
+            // Remove the worker from the assignment list
+            jobRequest.getAssignedWorkerIds().remove(workerId);
+
+            // Update the status back to "Pending" if no workers are assigned
+            if (jobRequest.getAssignedWorkerIds().isEmpty()) {
+                jobRequest.setWorkerAssignedStatus("Pending");
+            } else if (jobRequest.getAssignedWorkerIds().size() < jobRequest.getNumOfWorkers()) {
+                // If there are still some workers but fewer than required
+                jobRequest.setWorkerAssignedStatus("Partially Assigned");
+            }
+
+            return jobRequestRepository.save(jobRequest);
+        } else {
+            throw new RuntimeException("Worker with ID: " + workerId + " is not assigned to this job");
+        }
+    }
+    // New method: Delete a job
+    public void deleteJobById(String jobId) {
+        if (!jobRequestRepository.existsById(jobId)) {
+            throw new RuntimeException("Job not found with ID: " + jobId);
+        }
+        jobRequestRepository.deleteById(jobId);
+    }
+
 }

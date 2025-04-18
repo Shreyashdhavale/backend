@@ -105,4 +105,7 @@ public class WorkerController {
         long total = workerService.getTotalWorkers();
         return ResponseEntity.ok(total);
     }
+
+
+
 }
